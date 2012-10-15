@@ -38,8 +38,25 @@ Raphael.fn.connect = function(elem, target) {
       pathString += [firstConnection,'H',endX,secondConnection,'V',(y)].join(' ');
       console.log(pathString);
 
-      var path = paper.path(pathString);
+      // var path = paper.path(pathString);
+      var animPath = ['M',startX,startY].join(' ');
+      var path = paper.path(animPath);
       path.attr('stroke', '#d11260').attr('stroke-dasharray', ['- ']).attr('stroke-width', 1.1);
+      animPath += ['v',((y-startY)/2)].join(' ');
+      path.animate({path: animPath}, 200, function(){
+        animPath += firstConnection;
+
+        this.animate({path: animPath}, 200, function(){
+          animPath += ['H',endX].join(' ');
+          this.animate({path:animPath}, 200, function() {
+            animPath += secondConnection;
+            this.animate({path: animPath}, 200, function(){
+              animPath += ['V',(y)].join(' ');
+              this.animate({path: animPath}, 200);
+            });
+          });
+        });
+      });
     };
 
     var drawToElement = function(elem, target) {
